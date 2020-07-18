@@ -159,16 +159,20 @@ export class Dashboard extends React.Component {
         totalCollections = await authedAxios.get(
           `/collections/count?vendor.id=${userId}`
         );
-        await authedAxios.get(`/order-invoices`).then((res) => {
-          let amount = 0;
-          let toPay = 0;
-          res.data.map((ele) => {
-            amount = amount + ele.earned_amount;
-            toPay = toPay + ele.return_to_amount;
+        await authedAxios
+          .get(`/order-invoices?vendor.id=${localStorage.getItem("userId")}`)
+          .then((res) => {
+            console.log(res.data);
+            // if(res.data.vendor.id === lo)
+            let amount = 0;
+            let toPay = 0;
+            res.data.map((ele) => {
+              amount = amount + ele.earned_amount;
+              toPay = toPay + ele.return_to_amount;
+            });
+            total_earnings = amount;
+            amount_to_pay = toPay;
           });
-          total_earnings = amount;
-          amount_to_pay = toPay;
-        });
       }
 
       this.setState(
