@@ -42,7 +42,7 @@ export class Signup extends Component {
         return;
       }
     });
-    await axios
+    axios
       .post("/auth/local/register", {
         name,
         email,
