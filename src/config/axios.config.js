@@ -1,6 +1,6 @@
 import Axios from "axios";
 
-export const API_URL = "http://localhost:1337";
+export const API_URL = "https://meridukan-api.herokuapp.com";
 
 export const axios = Axios.create({
   baseURL: API_URL,
