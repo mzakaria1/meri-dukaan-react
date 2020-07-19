@@ -210,11 +210,12 @@ export class Dashboard extends React.Component {
           style={{
             fontSize: "28px",
             textAlign: "center",
-            fontFamily: "Quantico",
+            fontFamily: "Arial Black",
             fontWeight: "bold",
-            color: "#6666ff",
+            color: "#1890ff",
+            // borderTop: "5px solid red",
           }}>
-          {userRole.toUpperCase()} Dashboard{" "}
+          {userRole.toUpperCase()} DASHBOARD{" "}
           <span style={{ fontFamily: "Lucida Console", paddingTop: "10px" }}>
             {" "}
             <h6>All the basic reports will be here</h6>

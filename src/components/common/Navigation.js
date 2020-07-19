@@ -69,26 +69,32 @@ const Navigation = (props) => {
             <Menu.Item key="/allOrderInvoices">Order Invoices</Menu.Item>
           </SubMenu>
         ) : (
-          <Menu.Item key="/suppliers">
-            <UsergroupDeleteOutlined />
-            <span>Suppliers</span>
-          </Menu.Item>
+          <div>
+            <SubMenu
+              key="/reports"
+              title={
+                <span>
+                  <ContainerOutlined />
+                  <span>Invoices</span>
+                </span>
+              }>
+              <Menu.Item key="/supplierInvoices">Supplier Invoices</Menu.Item>
+            </SubMenu>
+            <Menu.Item key="/suppliers">
+              <UsergroupDeleteOutlined />
+              <span>Suppliers</span>
+            </Menu.Item>
+          </div>
         )}
+
         {localStorage.getItem("userRole") === "admin" ? (
-          <SubMenu
-            key="/reports"
-            title={
-              <span>
-                <ContainerOutlined />
-                <span>Invoices</span>
-              </span>
-            }>
-            <Menu.Item key="/supplierInvoices">Supplier Invoices</Menu.Item>
-          </SubMenu>
+          <Menu.Item key="/customers">
+            <ProfileOutlined />
+            <span>Customers</span>
+          </Menu.Item>
         ) : (
           ""
         )}
-
         <Menu.Item key="/profile">
           <ProfileOutlined />
           <span>My Profile</span>

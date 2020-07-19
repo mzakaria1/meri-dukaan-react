@@ -35,12 +35,16 @@ export class MainLayout extends React.Component {
           <div
             className="logo"
             style={{
-              height: "32px",
-              background: "rgba(255, 255, 255, 0.2)",
+              // height: "32px",
+              // // background: "rgba(255, 255, 255, 0.2)",
               margin: "16px",
               color: "white",
-            }}
-          />
+              textAlign: "center",
+              fontWeight: "bold",
+              // backgroundColor: "#cf2b4e",
+            }}>
+            Meri Dukan
+          </div>
           <Navigation {...this.props} />
         </Sider>
         <Layout className="site-layout">
@@ -51,6 +55,7 @@ export class MainLayout extends React.Component {
               background: "#fff",
               // textAlign: "right",
               paddingRight: "10px",
+              // backgroundColor: "#cf2b4e",
             }}>
             <div
               style={{
@@ -73,14 +78,30 @@ export class MainLayout extends React.Component {
                     paddingLeft: "30px",
                     fontFamily: "Arial Black",
                     fontSize: "30px",
-                    color: "purple",
+                    // color: "#fed92b",
+                    marginBottom: "20px",
+                    paddingBottom: "20px",
                   }}>
-                  <span style={{ fontFamily: "Bookman", fontSize: "22px" }}>
+                  {/* <span style={{ fontFamily: "Bookman", fontSize: "22px" }}>
                     Welcome to
                   </span>
-                  {"   "}
+                  {"   "} */}
                   Meri Dukaan{"  "}
-                  <span style={{ fontFamily: "Bookman", fontSize: "22px" }}>
+                  <span
+                    style={{
+                      // color: "rgb(40, 78, 185)",
+                      marginBottom: "20px",
+                      paddingBottom: "20px",
+                    }}>
+                    |{" "}
+                  </span>
+                  <span
+                    style={{
+                      fontFamily: "Arial Black",
+                      // fontFamily: "Bookman",
+                      fontSize: "30px",
+                      color: "#6bb8c4",
+                    }}>
                     Dashboard
                   </span>
                 </h1>

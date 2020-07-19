@@ -1,18 +1,9 @@
 import React from "react";
 
-import {
-  message,
-  Descriptions,
-  Spin,
-  Button,
-  Divider,
-  Switch,
-  Table,
-  Input,
-} from "antd";
+import { message, Descriptions, Spin, Button, Input, Switch } from "antd";
 import MainLayout from "../../common/Layout";
 import Highlighter from "react-highlight-words";
-import { CloseOutlined, SearchOutlined } from "@ant-design/icons";
+import { EditOutlined, SearchOutlined } from "@ant-design/icons";
 import { authedAxios, axios } from "../../../config/axios.config";
 
 export class Profile extends React.Component {
@@ -200,7 +191,10 @@ export class Profile extends React.Component {
             )
           : message.success(`${record.username} has been Un-Confirmed`, 3.5);
       })
-      .catch((err) => message.error(`There is some Error: ${err}`));
+      .catch((err) => {
+        message.error(`There is some Error: ${err}`, 3.5);
+        message.error(err.response.data.message[0].messages[0].message, 3.5);
+      });
   };
 
   getProfile = async () => {
@@ -222,6 +216,9 @@ export class Profile extends React.Component {
         console.log(err);
       });
   };
+  editProfileForm = () => {
+    this.props.history.push("/editProfile");
+  };
 
   componentDidMount() {
     this.getProfile();
@@ -231,33 +228,48 @@ export class Profile extends React.Component {
     return (
       <MainLayout {...this.props}>
         {this.state.user_loading ? (
-          <Descriptions
-            title="Supplier Info"
-            bordered={true}
-            column={1}
-            colon={true}>
-            <Descriptions.Item label="Name">
-              {this.state.user.name}
-            </Descriptions.Item>
-            <Descriptions.Item label="Username">
-              {this.state.user.username}
-            </Descriptions.Item>
-            <Descriptions.Item label="Email">
-              {this.state.user.email}
-            </Descriptions.Item>
-            <Descriptions.Item label="Address">
-              {this.state.user.address}
-            </Descriptions.Item>
-            <Descriptions.Item label="User Role">
-              {this.state.user.role.name}
-            </Descriptions.Item>
-            <Descriptions.Item label="Blocked">
-              {this.state.user.blocked === false ? "NO" : "YES"}
-            </Descriptions.Item>
-            <Descriptions.Item label="Confirmed" key={5}>
-              {this.state.user.confirmed === true ? "YES" : "NO"}
-            </Descriptions.Item>
-          </Descriptions>
+          <div>
+            <Descriptions
+              title="Supplier Info"
+              bordered={true}
+              column={1}
+              colon={true}>
+              <Descriptions.Item label="Name">
+                {this.state.user.name}
+              </Descriptions.Item>
+              <Descriptions.Item label="Username">
+                {this.state.user.username}
+              </Descriptions.Item>
+              <Descriptions.Item label="Email">
+                {this.state.user.email}
+              </Descriptions.Item>
+              <Descriptions.Item label="Address">
+                {this.state.user.address}
+              </Descriptions.Item>
+              <Descriptions.Item label="User Role">
+                {this.state.user.role.name}
+              </Descriptions.Item>
+              <Descriptions.Item label="Blocked">
+                {this.state.user.blocked === false ? "NO" : "YES"}
+              </Descriptions.Item>
+              <Descriptions.Item label="Confirmed" key={5}>
+                {this.state.user.confirmed === true ? "YES" : "NO"}
+              </Descriptions.Item>
+              <Descriptions.Item label="Action" key={6}>
+                <Button
+                  type="primary"
+                  icon={<EditOutlined />}
+                  block
+                  style={{
+                    backgroundColor: "green",
+                    width: "100px",
+                  }}
+                  onClick={() => this.editProfileForm()}>
+                  Edit
+                </Button>
+              </Descriptions.Item>
+            </Descriptions>
+          </div>
         ) : (
           <Spin
             spinning={this.state.user_loading}

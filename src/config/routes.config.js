@@ -5,6 +5,7 @@ import Signup from "../components/public/Signup";
 import ResetPassword from "../components/public/ResetPassword";
 import Dashboard from "../components/private/Dashboard";
 import Profile from "../components/private/Profiles/Profile";
+import EditProfile from "../components/private/Profiles/EditProfile";
 import AllCollections from "../components/private/Collections/AllCollections";
 import CollectionInfo from "../components/private/Collections/CollectionInfo";
 import EditCollection from "../components/private/Collections/EditCollection";
@@ -26,6 +27,8 @@ import AllOrderInvoices from "../components/private/Invoices/AllOrderInvoices";
 import SupplierInvoices from "../components/private/Invoices/SupplierInvoices";
 import SupplierInvoice from "../components/private/Invoices/SupplierInvoice";
 import OrderInvoice from "../components/private/Invoices/OrderInvoice";
+
+import AllCustomers from "../components/private/Customers/AllCustomers";
 
 import Suppliers from "../components/private/Profiles/Suppliers";
 import ProfileInfo from "../components/private/Profiles/ProfileInfo";
@@ -117,7 +120,9 @@ export const MainRoutes = ({ authed }) => (
       component={OrderInvoice}
     />
     <PrivateRoute authed={authed} path="/suppliers" component={Suppliers} />
+    <PrivateRoute authed={authed} path="/customers" component={AllCustomers} />
     <PrivateRoute authed={authed} path="/profileInfo" component={ProfileInfo} />
+    <PrivateRoute authed={authed} path="/editProfile" component={EditProfile} />
 
     {/* All the Public Routes access to anybody */}
     <PublicRoute authed={authed} path="/login" component={Login} />

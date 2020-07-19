@@ -49,14 +49,29 @@ export class Signup extends Component {
         password,
         username,
         address,
-        role: role,
         confirmed: "true",
       })
       .then(async (res) => {
         console.log(res);
-        await message.success("New Account Created Successfully!", 3.5, () => {
-          this.props.history.push("/");
-        });
+        const jwt = res.data.jwt;
+        axios
+          .put(
+            `/users/${res.data.user._id}`,
+            {
+              role,
+            },
+            {
+              headers: {
+                Authorization: "Bearer " + jwt,
+              },
+            }
+          )
+          .then((res) => {
+            message.success("New Account Created Successfully!", 3.5, () => {
+              this.props.history.push("/");
+            });
+          })
+          .catch(console.log);
       })
       .catch((error) => {
         console.log(error);

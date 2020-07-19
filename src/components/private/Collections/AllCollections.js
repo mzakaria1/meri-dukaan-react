@@ -1,19 +1,104 @@
 import React, { Component } from "react";
 import MainLayout from "../../common/Layout";
-import { Button, message, Spin, Divider, Table, Popconfirm, Tag } from "antd";
+import {
+  Button,
+  message,
+  Spin,
+  Divider,
+  Table,
+  Popconfirm,
+  Tag,
+  Input,
+} from "antd";
 import {
   PlusOutlined,
   DeleteOutlined,
   EditOutlined,
   QuestionCircleOutlined,
+  SearchOutlined,
   FundViewOutlined,
 } from "@ant-design/icons";
-import { authedAxios, API_URL } from "../../../config/axios.config";
+import Highlighter from "react-highlight-words";
+import { authedAxios } from "../../../config/axios.config";
 export class AllCollections extends Component {
   state = {
-    loading: true,
+    loading: false,
     collections: null,
     deleteingCollection: false,
+  };
+
+  getColumnSearchProps = (dataIndex) => ({
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters,
+    }) => (
+      <div style={{ padding: 8 }}>
+        <Input
+          ref={(node) => {
+            this.searchInput = node;
+          }}
+          placeholder={`Search ${dataIndex}`}
+          value={selectedKeys[0]}
+          onChange={(e) =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
+          onPressEnter={() =>
+            this.handleSearch(selectedKeys, confirm, dataIndex)
+          }
+          style={{ width: 188, marginBottom: 8, display: "block" }}
+        />
+        <Button
+          type="primary"
+          onClick={() => this.handleSearch(selectedKeys, confirm, dataIndex)}
+          icon={<SearchOutlined />}
+          size="small"
+          style={{ width: 90 }}>
+          Search
+        </Button>
+        <Button
+          onClick={() => this.handleReset(clearFilters)}
+          size="small"
+          style={{ width: 90 }}>
+          Reset
+        </Button>
+      </div>
+    ),
+    filterIcon: (filtered) => (
+      <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
+    ),
+    onFilter: (value, record) =>
+      record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+    onFilterDropdownVisibleChange: (visible) => {
+      if (visible) {
+        setTimeout(() => this.searchInput.select());
+      }
+    },
+    render: (text) =>
+      this.state.searchedColumn === dataIndex ? (
+        <Highlighter
+          highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
+          searchWords={[this.state.searchText]}
+          autoEscape
+          textToHighlight={text.toString()}
+        />
+      ) : (
+        text
+      ),
+  });
+
+  handleSearch = (selectedKeys, confirm, dataIndex) => {
+    confirm();
+    this.setState({
+      searchText: selectedKeys[0],
+      searchedColumn: dataIndex,
+    });
+  };
+
+  handleReset = (clearFilters) => {
+    clearFilters();
+    this.setState({ searchText: "" });
   };
 
   columns = [
@@ -21,6 +106,7 @@ export class AllCollections extends Component {
       title: "Collection Name",
       dataIndex: "name",
       key: "name",
+      ...this.getColumnSearchProps("name"),
       render: (text, record) => (
         <a onClick={() => this.collectionInfo(record)}>{text}</a>
       ),
@@ -34,6 +120,7 @@ export class AllCollections extends Component {
       title: "Category",
       dataIndex: "category",
       key: "category",
+      ...this.getColumnSearchProps("category"),
     },
     {
       title: "Vendor",
@@ -44,6 +131,7 @@ export class AllCollections extends Component {
       title: "Starting Price",
       dataIndex: "starting_price",
       key: "starting_price",
+      ...this.getColumnSearchProps("starting_price"),
       render: (price) => {
         return (
           <Tag key={price} color="green">
@@ -144,6 +232,7 @@ export class AllCollections extends Component {
   loadCollections = () => {
     const userId = localStorage.getItem("userId");
     const userRole = localStorage.getItem("userRole");
+    this.setState({ loading: true });
     authedAxios
       .get(`/collections`)
       .then(async (res) => {
@@ -226,16 +315,12 @@ export class AllCollections extends Component {
           )}
         </div>
         <Divider />
-        {this.state.loading && !this.state.collections ? (
-          <Spin spinning={true} tip="Loading Collections..." />
-        ) : (
-          <Table
-            columns={this.columns}
-            dataSource={this.state.collections}
-            rowKey="id"
-            loading={this.loading}
-          />
-        )}
+        <Table
+          loading={this.state.loading}
+          columns={this.columns}
+          dataSource={this.state.collections}
+          rowKey="id"
+        />
       </MainLayout>
     );
   }

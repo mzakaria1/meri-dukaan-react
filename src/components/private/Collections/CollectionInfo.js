@@ -24,7 +24,7 @@ export class CollectionInfo extends Component {
     p_details: null,
     c_details: null,
     c_loading: true,
-    p_loading: true,
+    p_loading: false,
     deleteingProduct: false,
     loading: false,
     visible: false,
@@ -129,10 +129,11 @@ export class CollectionInfo extends Component {
       title: "Product Title",
       dataIndex: "title",
       key: "title",
+      ...this.getColumnSearchProps("title"),
       render: (text, record) => (
         <a
           onClick={() => {
-            // this.productInfo(record.id);
+            this.productInfo(record.id);
           }}>
           {text}
         </a>
@@ -147,6 +148,7 @@ export class CollectionInfo extends Component {
       title: "Category Type",
       dataIndex: "type",
       key: "type",
+      ...this.getColumnSearchProps("type"),
     },
     {
       title: "Stock Quantity",
@@ -223,16 +225,15 @@ export class CollectionInfo extends Component {
       title: "Product Title",
       dataIndex: "title",
       key: "title",
-
+      ...this.getColumnSearchProps("title"),
       render: (text, record) => (
         <a
           onClick={() => {
-            // this.productInfo(record.id);
+            this.productInfo(record.id);
           }}>
           {text}
         </a>
       ),
-      ...this.getColumnSearchProps("title"),
     },
     {
       title: "Description",
@@ -321,7 +322,9 @@ export class CollectionInfo extends Component {
   handleCancel = () => {
     this.setState({ visible: false });
   };
-
+  productInfo = (selected_product) => {
+    this.props.history.push("/productInfo/" + selected_product);
+  };
   addProductToCollection = async (record) => {
     this.setState({ loading: true });
     const path = this.props.history.location.pathname;
@@ -418,6 +421,7 @@ export class CollectionInfo extends Component {
   loadCollection = () => {
     const path = this.props.history.location.pathname;
     const key = path.split("/");
+    this.setState({ p_loading: true });
     authedAxios
       .get(`/collections/${key[2]}`)
       .then((res) => {
@@ -479,70 +483,66 @@ export class CollectionInfo extends Component {
             </div>
           )}
         </div>
-
-        {this.state.p_loading ? (
-          <Spin spinning={true} tip="Loading Products..." />
-        ) : (
-          <div>
-            {localStorage.getItem("userRole") === "supplier" ? (
-              <div style={{ margin: "50 px 0" }}>
-                <h2 style={{ float: "left" }}>
-                  Add Product into this Collection:
+        <div>
+          {localStorage.getItem("userRole") === "supplier" ? (
+            <div style={{ margin: "50 px 0" }}>
+              <h2 style={{ float: "left" }}>
+                Add Product into this Collection:
+                <Button
+                  type="primary"
+                  style={{ marginLeft: "10px" }}
+                  onClick={this.showModal}>
+                  Click Here
+                </Button>
+              </h2>
+              <Modal
+                width="1000px"
+                visible={this.state.visible}
+                title="Title"
+                onOk={this.handleOk}
+                onCancel={this.handleCancel}
+                footer={[
+                  <Button key="back" onClick={this.handleCancel}>
+                    Return
+                  </Button>,
                   <Button
+                    key="submit"
                     type="primary"
-                    style={{ marginLeft: "10px" }}
-                    onClick={this.showModal}>
-                    Click Here
-                  </Button>
-                </h2>
-                <Modal
-                  width="1000px"
-                  visible={this.state.visible}
-                  title="Title"
-                  onOk={this.handleOk}
-                  onCancel={this.handleCancel}
-                  footer={[
-                    <Button key="back" onClick={this.handleCancel}>
-                      Return
-                    </Button>,
-                    <Button
-                      key="submit"
-                      type="primary"
-                      loading={this.state.loading}
-                      onClick={this.handleOk}>
-                      Submit
-                    </Button>,
-                  ]}>
-                  <Button
-                    type="primary"
-                    icon={<PlusOutlined />}
-                    onClick={() => this.addNewProduct()}
-                    style={{ float: "right" }}
-                    key="back">
-                    All New Product
-                  </Button>
-                  <Divider />
-                  ,
-                  <Table
-                    columns={this.columns_p}
-                    dataSource={this.state.products}
-                    rowKey="id"
-                  />
-                </Modal>
-              </div>
-            ) : (
-              ""
-            )}
-            <Divider style={{ marginTop: "50px" }}>
-              Products in this Collection
-            </Divider>
-            <Table
-              columns={this.columns}
-              dataSource={this.state.p_details}
-              rowKey="id"
-            />
-          </div>
-        )}
+                    loading={this.state.loading}
+                    onClick={this.handleOk}>
+                    Submit
+                  </Button>,
+                ]}>
+                <Button
+                  type="primary"
+                  icon={<PlusOutlined />}
+                  onClick={() => this.addNewProduct()}
+                  style={{ float: "right" }}
+                  key="back">
+                  All New Product
+                </Button>
+                <Divider />
+                ,
+                <Table
+                  columns={this.columns_p}
+                  dataSource={this.state.products}
+                  rowKey="id"
+                />
+              </Modal>
+            </div>
+          ) : (
+            ""
+          )}
+          <Divider style={{ marginTop: "50px" }}>
+            Products in this Collection
+          </Divider>
+          <Table
+            loading={this.state.p_loading}
+            columns={this.columns}
+            dataSource={this.state.p_details}
+            rowKey="id"
+          />
+        </div>
       </MainLayout>
     );
   }

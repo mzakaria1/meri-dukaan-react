@@ -82,95 +82,16 @@ export class Login extends Component {
         }
       })
       .catch((error) => {
-        console.log(error);
-        const status = error.response.status;
-        console.log(status);
-        if (status === 400) {
-          message.error("The Email or Password is Incorrect! ", 3.5);
-        } else if (status === 404) {
-          message.error("This Account Doesn't Exist! ", 3.5);
-        }
+        console.log(error.response);
+        const mess = error.response.data.message[0].messages[0].message;
+        message.error(mess, 4);
         this.setState({
           loggingIn: false,
         });
       });
   };
-  // state = {
-  //   loggingIn: false,
-  // };
   openSignupForm = () => {
     this.props.history.push("/signup");
-  };
-  onFinish = (values) => {
-    console.log("Received values of form: ", values);
-    const { email, password } = values;
-    this.setState({
-      loggingIn: true,
-    });
-
-    axios
-      .post("/auth/local/", {
-        identifier: email,
-        password,
-      })
-      .then(async (res) => {
-        const UserId = res.data.user.id;
-        const LoggedInUsername = res.data.user.username;
-        const role = res.data.user.role.type;
-        console.log(res);
-
-        if (res.data.user.role.type === "supplier") {
-          message.success("Welcome " + res.data.user.role.name, 2.0);
-          const token = res.data.jwt;
-          localStorage.setItem("jwt", token);
-          localStorage.setItem("LoggedInUsername", LoggedInUsername);
-          localStorage.setItem("userId", UserId);
-          localStorage.setItem("userRole", role);
-          messaging
-            .requestPermission()
-            .then(async function () {
-              const fcm = await messaging.getToken();
-              console.log(fcm);
-              await axios.put(
-                `/users/${UserId}`,
-                { fcmToken: fcm },
-                {
-                  headers: {
-                    Authorization: "Bearer " + token,
-                  },
-                }
-              );
-              window.location = "/";
-            })
-            .catch(function (err) {
-              message.error("Unable to get permission to notify.", err);
-              window.location = "/";
-            });
-        } else if (res.data.user.role.type === "admin") {
-          message.success("Welcome " + res.data.user.role.name, 2.0);
-          const token = res.data.jwt;
-          localStorage.setItem("jwt", token);
-          localStorage.setItem("LoggedInUsername", LoggedInUsername);
-          localStorage.setItem("userId", UserId);
-          localStorage.setItem("userRole", role);
-          window.location = "/";
-        } else {
-          message.error("Invalid Account Type!", 1.5);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        const status = error.response.status;
-        console.log(status);
-        if (status === 400) {
-          message.error("The Email or Password is Incorrect! ", 3.5);
-        } else if (status === 404) {
-          message.error("This Account Doesn't Exist! ", 3.5);
-        }
-        this.setState({
-          loggingIn: false,
-        });
-      });
   };
   render() {
     return (
